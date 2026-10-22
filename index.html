@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="tr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Döviz Çevirici</title>
+    
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="converter-card">
+    <h1>Döviz Çevirici</h1>
+    
+    <div class="group">
+        <label for="amount">Miktar</label>
+        <input type="number" id="amount" value="1.00" step="0.01">
+    </div>
+
+    <div class="group">
+        <label for="fromCurrency">Kaynak</label>
+        <select id="fromCurrency">
+            <option value="TRY">Türk Lirası (TRY)</option>
+            <option value="USD">Amerikan Doları (USD)</option>
+            <option value="EUR">Euro (EUR)</option>
+            <option value="GBP">İngiliz Sterlini (GBP)</option>
+        </select>
+    </div>
+
+    <button class="swap-btn" id="swapBtn">⇄ Değiştir</button>
+
+    <div class="group">
+        <label for="toCurrency">Hedef</label>
+        <select id="toCurrency">
+            <option value="USD">Amerikan Doları (USD)</option>
+            <option value="TRY" selected>Türk Lirası (TRY)</option>
+            <option value="EUR">Euro (EUR)</option>
+            <option value="GBP">İngiliz Sterlini (GBP)</option>
+        </select>
+    </div>
+
+    <div class="result" id="result">0.00</div>
+</div>
+
+<script>
+    const rates = {
+        TRY: 1,
+        USD: 0.031,
+        EUR: 0.029,
+        GBP: 0.025
+    };
+
+    const amountInput = document.getElementById('amount');
+    const fromSelect = document.getElementById('fromCurrency');
+    const toSelect = document.getElementById('toCurrency');
+    const swapBtn = document.getElementById('swapBtn');
+    const resultDiv = document.getElementById('result');
+
+    function convert() {
+        const amount = parseFloat(amountInput.value);
+        const from = fromSelect.value;
+        const to = toSelect.value;
+
+        // Convert to base (TRY) then to target
+        const baseAmount = amount / rates[from];
+        const converted = baseAmount * rates[to];
+
+        resultDiv.textContent = new Intl.NumberFormat('tr-TR', {
+            style: 'currency',
+            currency: to
+        }).format(converted);
+    }
+
+    swapBtn.addEventListener('click', () => {
+        const temp = fromSelect.value;
+        fromSelect.value = toSelect.value;
+        toSelect.value = temp;
+        convert();
+    });
+
+    [amountInput, fromSelect, toSelect].forEach(el => {
+        el.addEventListener('input', convert);
+    });
+
+    // Initial run
+    convert();
+</script>
+
+</body>
+</html>
